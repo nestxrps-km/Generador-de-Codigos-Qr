@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Evidencia - Centro de Salud</title>
+    
+    <!-- Fuente moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Íconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Librería para comprimir imágenes -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
+    
+    <!-- Librería para códigos QR con estilo -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2f9 0%, #e0e7fd 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .top-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #818cf8 0%, #3b82f6 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        h1 {
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-icon {
+            color: #94a3b8;
+            font-size: 24px;
+            margin-right: 14px;
+        }
+
+        input[type="text"] {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            color: #1e293b;
+            background: transparent;
+        }
+
+        input[type="text"]::placeholder {
+            color: #94a3b8;
+        }
+
+        .file-wrapper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .btn-choose-file {
+            background: #eff6ff;
+            color: #2563eb;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-choose-file:hover {
+            background: #dbeafe;
+        }
+
+        .file-text {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-left: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #d97706;
+            text-align: center;
+        }
+
+        .success-text {
+            color: #059669;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #qrcode svg {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* ESTILOS PARA EL BOTÓN DE DESCARGA */
+        .btn-download {
+            width: 100%;
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            display: none; /* Oculto por defecto */
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="top-icon">
+            <i class="ph ph-qr-code"></i>
+        </div>
+        <h1>Subir Evidencia</h1>
+        <p class="subtitle">Completa la información del taller y genera el QR.</p>
+
+        <!-- Input del Nombre del Taller -->
+        <div class="input-group">
+            <i class="ph ph-graduation-cap input-icon"></i>
+            <input type="text" id="tallerName" placeholder="Nombre del Taller" required>
+        </div>
+
+        <!-- Input del Nombre del Ponente -->
+        <div class="input-group">
+            <i class="ph ph-user input-icon"></i>
+            <input type="text" id="ponenteName" placeholder="Nombre del Ponente" required>
+        </div>
+        
+        <!-- Input de Archivos Personalizado -->
+        <div class="input-group">
+            <i class="ph ph-file-text input-icon"></i>
+            <div class="file-wrapper">
+                <label for="fotosInput" class="btn-choose-file">
+                    <i class="ph ph-folder-open text-lg"></i> Elegir archivos
+                </label>
+                <span id="file-name" class="file-text">Ningún archivo seleccionado</span>
+            </div>
+            <input type="file" id="fotosInput" accept="image/*" multiple>
+        </div>
+        
+        <button id="subirBtn" class="btn-submit">
+            <i class="ph ph-squares-four text-xl"></i> Comprimir y Subir Evidencia
+        </button>
+
+        <div id="status"></div>
+        
+        <div id="qrcode"></div>
+
+        <!-- NUEVO BOTÓN DE DESCARGA -->
+        <button id="descargarBtn" class="btn-download">
+            <i class="ph ph-download-simple text-xl"></i> Descargar QR como Imagen
+        </button>
+    </div>
+
+    <script>
+        // Tu URL de Google Apps Script 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1otJVoMICmdS4yP44X7jrVoYpoBAJ7exFRoFVIUE3--nCnyBbyNaXrg5yO9gokPjnsA/exec";
+
+        const btnSubir = document.getElementById('subirBtn');
+        const btnDescargar = document.getElementById('descargarBtn');
+        const statusText = document.getElementById('status');
+        const qrContainer = document.getElementById('qrcode');
+        const fileInput = document.getElementById('fotosInput');
+        const fileNameDisplay = document.getElementById('file-name');
+        
+        // Variables para guardar el QR y el nombre para la descarga
+        let currentQrCode = null;
+        let currentTallerInfo = "";
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                if (this.files.length === 1) {
+                    fileNameDisplay.textContent = this.files[0].name;
+                } else {
+                    fileNameDisplay.textContent = `${this.files.length} archivos seleccionados`;
+                }
+                fileNameDisplay.style.color = '#1e293b'; 
+            } else {
+                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                fileNameDisplay.style.color = '#94a3b8';
+            }
+        });
+
+        btnSubir.addEventListener('click', async () => {
+            const tallerName = document.getElementById('tallerName').value.trim();
+            const ponenteName = document.getElementById('ponenteName').value.trim();
+
+            if (!tallerName) {
+                alert("Por favor, ingresa el nombre del taller.");
+                return;
+            }
+            if (!ponenteName) {
+                alert("Por favor, ingresa el nombre del ponente.");
+                return;
+            }
+            if (fileInput.files.length === 0) {
+                alert("Por favor, selecciona al menos una foto.");
+                return;
+            }
+
+            const nombreCarpetaCompleto = `${tallerName} - Ponente: ${ponenteName}`;
+            
+            // Guardamos el nombre para usarlo después al descargar el QR
+            currentTallerInfo = `${tallerName}_${ponenteName}`; 
+
+            btnSubir.disabled = true;
+            btnSubir.innerHTML = '<i class="ph ph-spinner animate-spin text-xl"></i> Procesando...';
+            qrContainer.innerHTML = "";
+            btnDescargar.style.display = "none"; // Ocultamos el botón si suben uno nuevo
+            statusText.className = "";
+            let processedFiles = [];
+
+            const compressionOptions = {
+                maxSizeMB: 0.3, 
+                maxWidthOrHeight: 1200, 
+                useWebWorker: true
+            };
+
+            try {
+                statusText.innerText = "Comprimiendo fotos para ahorrar datos... (1/2)";
+
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    let imageFile = fileInput.files[i];
+                    let compressedFile = await imageCompression(imageFile, compressionOptions);
+                    let base64 = await fileToBase64(compressedFile);
+                    
+                    processedFiles.push({
+                        name: imageFile.name,
+                        mimeType: compressedFile.type,
+                        base64: base64
+                    });
+                }
+
+                statusText.innerText = "Subiendo fotos a Google Drive... (2/2)";
+
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        tallerName: nombreCarpetaCompleto,
+                        files: processedFiles
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusText.innerHTML = '<span class="success-text">¡Evidencia subida con éxito!</span><br>Escanea o descarga este QR.';
+                    
+                    // Generar el código QR
+                    currentQrCode = new QRCodeStyling({
+                        width: 250,
+                        height: 250,
+                        type: "svg", 
+                        data: result.folderUrl,
+                        margin: 10,
+                        dotsOptions: { color: "#000000", type: "dots" },
+                        cornersSquareOptions: { color: "#000000", type: "extra-rounded" },
+                        cornersDotOptions: { color: "#000000", type: "dot" },
+                        backgroundOptions: { color: "#ffffff" }
+                    });
+                    
+                    currentQrCode.append(qrContainer);
+                    
+                    // Mostrar el botón de descarga
+                    btnDescargar.style.display = "flex";
+                    
+                } else {
+                    throw new Error(result.error);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                statusText.innerText = "Ocurrió un error. Intenta subir menos fotos a la vez.";
+                statusText.style.color = "#ef4444";
+            } finally {
+                btnSubir.disabled = false;
+                btnSubir.innerHTML = '<i class="ph ph-squares-four text-xl"></i> Comprimir y Subir Evidencia';
+            }
+        });
+
+        // FUNCIONALIDAD DEL BOTÓN DE DESCARGA
+        btnDescargar.addEventListener('click', () => {
+            if (currentQrCode) {
+                // Limpiamos el nombre para que no tenga caracteres raros en el archivo
+                const nombreArchivo = "QR_" + currentTallerInfo.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                
+                currentQrCode.download({
+                    name: nombreArchivo,
+                    extension: "png" // Lo descargamos como PNG de alta calidad
+                });
+            }
+        });
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
+    </script>
+</body>
+</html>
